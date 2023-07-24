@@ -487,6 +487,36 @@ class Table_Drawer:
             max_line = coordinates
     return max_line
   
+  def count_tables(self,page_num): 
+    image =cv2.imread(self.image)
+    count=0
+    min_contour_index = min(range(len(self.table_contours)), key=lambda i: self.table_contours[i][2] * self.table_contours[i][3])
+    min_contour = self.table_contours[min_contour_index]
+    minx,miny,minw,minh=min_contour
+    minarea=minw*minh
+    l=[]
+    for i in range(len(self.table_contours)):
+      x,y,w,h=self.table_contours[i]
+      area=w*h
+      is_nested=False
+      # li.append(box)
+      for j in range(len(self.table_contours)):
+        if i!=j:
+          x1,y1,w1,h1=self.table_contours[j]
+          if x1 >= x and y1 >= y and (x1 + w1) <= (x + w) and (y1 + h1) <= (y + h):
+            is_nested=True
+            break
+      if is_nested and area>500000:
+        l.append(self.table_contours[i])
+        cv2.rectangle(image,(x,y),(x+w,y+h), (0, 0, 255), 3)
+        count+=1
+    return count
+    # print("\n\n\n",l,"\n\n\n\n")
+    # print(f"\n\n\n\nNumber of count{count}\n\n\n\n")
+    # filename=os.path.join(self.save_path,'_page_{0}_count_tables.jpg'.format(page_num))
+    # cv2.imwrite(filename,image)
+    # print(self.table_contours)
+    # print("\n\n\n\n",min_contour,"\n\n\n\n")
   
   def main(self):
     Row_contour_dict={}
