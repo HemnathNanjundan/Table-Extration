@@ -1,4 +1,3 @@
-
 from shapely.geometry import Polygon
 import pandas as pd
 from pdf2image import convert_from_path
@@ -487,6 +486,7 @@ class Table_Drawer:
             max_length=length
             max_line = coordinates
     return max_line
+  
   
   def main(self):
     Row_contour_dict={}
